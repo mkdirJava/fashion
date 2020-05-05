@@ -1,31 +1,35 @@
 package job.fashion.entry.search;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import job.fashion.entry.search.model.WordFinding;
 import job.fashion.entry.search.tokenise.ITokeniser;
+import job.fashion.entry.search.top.IRankWords;
 
-public class WordSearchImpl implements IWordSearch {
+/***
+ * Implementation for the IWordSearch of String, trying to promote SOLID for re-usability
+ * @author w
+ *
+ */
+public class WordSearchImpl implements IWordSearch<String> {
 
-	private ITokeniser iTokeniser;
-	private static final Integer THRESHOLD = 40;
+	private ITokeniser<String> iTokeniser;
+	private IRankWords iRankWords;
+	
 
-	public WordSearchImpl(ITokeniser iTokeniser) {
+	public WordSearchImpl(ITokeniser<String> iTokeniser, IRankWords iRankWords) {
 		this.iTokeniser = iTokeniser;
+		this.iRankWords = iRankWords;
 	}
 
 	public String[] top_3_words(String words) {
 		String[] tokenise = iTokeniser.tokenise(words);
-		List<WordFinding> rankWords = rankWords(tokenise);
+		List<WordFinding> rankWords = this.iRankWords.rankWords(tokenise);
 		return findIndexToThree(rankWords);
 	}
 	
 	private String[] findIndexToThree(List<WordFinding> finding) {
-		Integer endIndex = 0;
+		Integer endIndex;
 		if(finding.size()>=3) {
 			endIndex=3;
 		}else {
@@ -36,40 +40,7 @@ public class WordSearchImpl implements IWordSearch {
 				.toArray(String[]::new);
 	}
 	
-	private List<WordFinding> rankWords(String[] tokenise) {
-		if (tokenise.length <= THRESHOLD) {
-			Map<String, Long> findCommonWords = findCommonWords(tokenise);
-			return findCommonWords.entrySet().stream()
-			.map(entry-> new WordFinding(entry.getKey(), entry.getValue()))
-			.sorted().collect(Collectors.toList());
-		} else {
-			String[] firstHalf  = Arrays.copyOfRange(tokenise, 0, tokenise.length/2);
-			String[] secondHalf = Arrays.copyOfRange(tokenise, tokenise.length/2, tokenise.length);
-			
-			Map<String, Long> findCommonWordsFirstHalf = findCommonWords(firstHalf);
-			Map<String, Long> findCommonWordsSecondHalf = findCommonWords(secondHalf);
-			
-			return combine(findCommonWordsFirstHalf, findCommonWordsSecondHalf);
-		}
-	}
-
-	private List<WordFinding> combine(Map<String, Long> findCommonWordsFirstHalf,
-			Map<String, Long> findCommonWordsSecondHalf) {
-		findCommonWordsSecondHalf.entrySet().stream().forEach(secondhalfEntry->{
-			findCommonWordsFirstHalf.computeIfPresent(secondhalfEntry.getKey(), (key,val)-> val + secondhalfEntry.getValue());
-			findCommonWordsFirstHalf.computeIfAbsent(secondhalfEntry.getKey(),key-> secondhalfEntry.getValue() );	
-		});
-		
-		return findCommonWordsFirstHalf.entrySet().stream()
-		.map(entry-> new WordFinding(entry.getKey(), entry.getValue()))
-		.sorted().collect(Collectors.toList());
-	}
-
-	private Map<String,Long> findCommonWords(String[] tokenise) {
-		return Arrays.asList(tokenise).stream()
-				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-	}
+	
 	
 
 }
