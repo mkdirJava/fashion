@@ -12,6 +12,8 @@ import job.fashion.entry.search.tokenise.ITokeniser;
  * acts like the iterable interface to return a section of the file whilst holding the index, 
  * this would be trouble should multiple jvms / host locks come into play
  * 
+ * Also Line 30 tokenises the whole string in one go, would be better to take a chunk as it could be a significant size
+ * 
  * @author W
  *
  */
