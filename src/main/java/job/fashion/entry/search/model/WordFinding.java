@@ -23,6 +23,7 @@ public class WordFinding implements Comparable<WordFinding>{
 		return count;
 	}
 	
+	// Use the collections framework to sort primary by count then by the lexical order of a string
 	@Override
 	public int compareTo(WordFinding other) {
 		if(this.count > other.count) {
@@ -31,7 +32,7 @@ public class WordFinding implements Comparable<WordFinding>{
 		if(this.count< other.count) {
 			return 1;
 		}
-		return 0;
+		return this.word.compareTo(other.word);
 	}
 	
 	@Override

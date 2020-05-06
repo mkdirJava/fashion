@@ -27,30 +27,30 @@ public class WordSearchImplTest {
 	
 	@Test
 	@DisplayName("Test 1 as suggested in the spec")
-	void test1() {
+	void test1_() {
 		String[] top_3_words = wordSearch.top_3_words(TEST_1_STRING);
-		assertArrayEquals(top_3_words,new String[] {"a","of","on"});
+		assertArrayEquals(new String[] {"a","of","on"},top_3_words);
 	}
 	
 	@Test
 	@DisplayName("Test 2 as suggested in the spec")
 	void test2() {
 		String[] top_3_words = wordSearch.top_3_words(TEST_2_STRING);
-		assertArrayEquals(top_3_words,new String[] {"e","ddd","aa"});
+		assertArrayEquals(new String[] {"e","ddd","aa"},top_3_words);
 	}
 	
 	@Test
 	@DisplayName("Test 3 as suggested in the spec")
 	void test3() {
 		String[] top_3_words = wordSearch.top_3_words(TEST_3_STRING);
-		assertArrayEquals(top_3_words,new String[] {"won't","wont"});
+		assertArrayEquals(new String[] {"won't","wont"},top_3_words);
 	}
 	
 	@Test
 	@DisplayName("Test 4 empty String will give an empty array")
 	void test4_emptyStringTest() {
 		String[] top_3_words = wordSearch.top_3_words(TEST_4_EMPTY_STRING);
-		assertArrayEquals(top_3_words,new String[] {});
+		assertArrayEquals(new String[] {},top_3_words);
 	}
 	
 
